@@ -1,4 +1,15 @@
 package com.BookingStadium.IdentityService.dto.request;
 
-public class AuthenticateRequest {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthenticationRequest {
+    private String loginName;
+    private String password;
 }
