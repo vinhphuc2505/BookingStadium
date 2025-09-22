@@ -11,7 +11,7 @@ import com.BookingStadium.IdentityService.exception.ErrorCode;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
-import jakarta.validation.constraints.NotNull;
+import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @NotNull
+    @NonFinal
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
 
@@ -40,19 +40,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_OR_EMAIL_NOT_EXISTED));
         var authenticate = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
-        if(!authenticate){
-            return AuthenticationResponse.builder()
-                    .authenticate(false)
-                    .build();
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+
+        if(authenticate){
+            authenticationResponse.setToken(generateToken(user));
+            authenticationResponse.setAuthenticate(true);
+        }else{
+            authenticationResponse.setAuthenticate(false);
         }
 
-        return AuthenticationResponse.builder()
-                .authenticate(true)
-                .token(generateToken(user))
-                .build();
+
+        return authenticationResponse;
     }
-
-
 
 
     private String generateToken(User user) throws JOSEException {

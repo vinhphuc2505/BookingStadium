@@ -12,8 +12,11 @@ import com.BookingStadium.IdentityService.exception.AppException;
 import com.BookingStadium.IdentityService.exception.ErrorCode;
 import com.BookingStadium.IdentityService.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,9 +32,14 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserResponse createUser(CreateUserRequest request) {
         if(userRepository.existsByEmailOrUsername(request.getEmail(), request.getUsername())){
             throw new AppException(ErrorCode.USER_OR_EMAIL_EXISTED);
+        }
+
+        if(!(request.getPassword().equals(request.getPasswordAgain()))){
+            throw new AppException(ErrorCode.PASSWORDS_DO_NOT_MATCH);
         }
 
         User user = userMapper.toUser(request);
@@ -47,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse findUser(String id) {
         return userMapper.toUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
@@ -54,16 +63,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getMyInfo() {
-        return null;
+        var id = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUser() {
         return userMapper.toUserResponseList(userRepository.findAll());
     }
 
     @Override
-    public UserResponse updateUser(String id, UpdateUserRequest request) {
+    @Transactional
+    public UserResponse updateUser(UpdateUserRequest request) {
+        if(!(request.getPassword().equals(request.getPasswordAgain()))){
+            throw new AppException(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+        }
+
+        var id = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user, request);
@@ -73,6 +95,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

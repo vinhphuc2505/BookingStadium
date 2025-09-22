@@ -18,6 +18,7 @@ public enum ErrorCode {
     ROLE_NOT_EXISTED(1006, "Role not existed", HttpStatus.NOT_FOUND),
     USER_NOT_EXISTED(1007, "User not existed", HttpStatus.NOT_FOUND),
     USER_OR_EMAIL_NOT_EXISTED(1008, "User or email not existed", HttpStatus.NOT_FOUND),
+    PASSWORDS_DO_NOT_MATCH(1009, "Password do not match", HttpStatus.BAD_REQUEST),
     ;
     private final int errorCode;
     private final String message;
