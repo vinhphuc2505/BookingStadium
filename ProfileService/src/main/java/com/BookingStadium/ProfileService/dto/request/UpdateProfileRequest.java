@@ -1,4 +1,21 @@
 package com.BookingStadium.ProfileService.dto.request;
 
-public class UpdateUserRequest {
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UpdateProfileRequest {
+    private String firstname;
+
+    private String lastname;
+
+    private String phone;
+
+    private String date_of_birth;
 }
