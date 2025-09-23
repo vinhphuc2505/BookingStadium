@@ -1,8 +1,8 @@
 package com.BookingStadium.IdentityService.config;
 
 
-import com.BookingStadium.IdentityService.Repository.RoleRepository;
-import com.BookingStadium.IdentityService.Repository.UserRepository;
+import com.BookingStadium.IdentityService.repository.RoleRepository;
+import com.BookingStadium.IdentityService.repository.UserRepository;
 import com.BookingStadium.IdentityService.entity.Role;
 import com.BookingStadium.IdentityService.entity.User;
 import com.BookingStadium.IdentityService.exception.AppException;

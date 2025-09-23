@@ -1,4 +1,4 @@
-package com.BookingStadium.IdentityService.Service;
+package com.BookingStadium.IdentityService.service;
 
 import com.BookingStadium.IdentityService.dto.request.CreateUserRequest;
 import com.BookingStadium.IdentityService.dto.request.UpdateUserRequest;

@@ -1,6 +1,7 @@
 package com.BookingStadium.IdentityService.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class Role {
     private String roleId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<User> userList = new ArrayList<>();
 }

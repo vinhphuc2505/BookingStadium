@@ -1,8 +1,10 @@
-package com.BookingStadium.IdentityService.Service.ServiceImpl;
+package com.BookingStadium.IdentityService.service.ServiceImpl;
 
-import com.BookingStadium.IdentityService.Repository.RoleRepository;
-import com.BookingStadium.IdentityService.Repository.UserRepository;
-import com.BookingStadium.IdentityService.Service.UserService;
+import com.BookingStadium.IdentityService.client.ProfileClient;
+import com.BookingStadium.IdentityService.mapper.external.ProfileMapper;
+import com.BookingStadium.IdentityService.repository.RoleRepository;
+import com.BookingStadium.IdentityService.repository.UserRepository;
+import com.BookingStadium.IdentityService.service.UserService;
 import com.BookingStadium.IdentityService.dto.request.CreateUserRequest;
 import com.BookingStadium.IdentityService.dto.request.UpdateUserRequest;
 import com.BookingStadium.IdentityService.dto.response.UserResponse;
@@ -30,6 +32,11 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ProfileClient profileClient;
+    @Autowired
+    private ProfileMapper profileMapper;
+
 
     @Override
     @Transactional
@@ -50,8 +57,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
 
         user.setRole(role);
+        userRepository.save(user);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        var profileRequest = profileMapper.toCreateProfileRequest(request);
+        profileRequest.setUserId(user.getUserId());
+
+        profileClient.createProfile(profileRequest);
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override

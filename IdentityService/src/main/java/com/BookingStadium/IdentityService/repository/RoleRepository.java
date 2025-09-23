@@ -1,4 +1,4 @@
-package com.BookingStadium.IdentityService.Repository;
+package com.BookingStadium.IdentityService.repository;
 
 import com.BookingStadium.IdentityService.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

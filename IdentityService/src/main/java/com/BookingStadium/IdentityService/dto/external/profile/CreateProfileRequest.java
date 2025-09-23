@@ -1,4 +1,4 @@
-package com.BookingStadium.IdentityService.dto.request;
+package com.BookingStadium.IdentityService.dto.external.profile;
 
 
 import lombok.AllArgsConstructor;
@@ -7,17 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class CreateUserRequest {
-    private String email;
-
-    private String username;
-
-    private String password;
-
-    private String passwordAgain;
+public class CreateProfileRequest {
+    private String userId;
 
     private String firstname;
 

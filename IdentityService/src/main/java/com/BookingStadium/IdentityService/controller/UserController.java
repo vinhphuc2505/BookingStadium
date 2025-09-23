@@ -1,7 +1,7 @@
-package com.BookingStadium.IdentityService.Controller;
+package com.BookingStadium.IdentityService.controller;
 
 
-import com.BookingStadium.IdentityService.Service.UserService;
+import com.BookingStadium.IdentityService.service.UserService;
 import com.BookingStadium.IdentityService.dto.request.CreateUserRequest;
 import com.BookingStadium.IdentityService.dto.request.UpdateUserRequest;
 import com.BookingStadium.IdentityService.dto.response.ApiResponse;

@@ -1,8 +1,8 @@
-package com.BookingStadium.IdentityService.Service.ServiceImpl;
+package com.BookingStadium.IdentityService.service.ServiceImpl;
 
 
-import com.BookingStadium.IdentityService.Repository.UserRepository;
-import com.BookingStadium.IdentityService.Service.AuthenticationService;
+import com.BookingStadium.IdentityService.repository.UserRepository;
+import com.BookingStadium.IdentityService.service.AuthenticationService;
 import com.BookingStadium.IdentityService.dto.request.AuthenticationRequest;
 import com.BookingStadium.IdentityService.dto.response.AuthenticationResponse;
 import com.BookingStadium.IdentityService.entity.User;
