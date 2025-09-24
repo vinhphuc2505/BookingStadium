@@ -1,6 +1,8 @@
 package com.BookingStadium.IdentityService.service.ServiceImpl;
 
 
+import com.BookingStadium.IdentityService.dto.request.IntrospectRequest;
+import com.BookingStadium.IdentityService.dto.response.IntrospectResponse;
 import com.BookingStadium.IdentityService.repository.UserRepository;
 import com.BookingStadium.IdentityService.service.AuthenticationService;
 import com.BookingStadium.IdentityService.dto.request.AuthenticationRequest;
@@ -10,13 +12,16 @@ import com.BookingStadium.IdentityService.exception.AppException;
 import com.BookingStadium.IdentityService.exception.ErrorCode;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -49,8 +54,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             authenticationResponse.setAuthenticate(false);
         }
 
-
         return authenticationResponse;
+    }
+
+    @Override
+    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
+        var token = request.getToken();
+        // Xác thực token bằng SIGNER_KEY
+        JWSVerifier jwsVerifier = new MACVerifier(SIGNER_KEY.getBytes());
+        // Giải mã token
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        // Lấy thời gian hết hạn của token
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        // Kiểm tra tính hợp lệ của token
+        var verified = signedJWT.verify(jwsVerifier);
+
+        boolean valid = verified && expiryTime.after(new Date());
+        IntrospectResponse introspectResponse = new IntrospectResponse();
+        introspectResponse.setValid(valid);
+
+        return introspectResponse;
     }
 
 

@@ -57,14 +57,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
 
         user.setRole(role);
-        userRepository.save(user);
 
         var profileRequest = profileMapper.toCreateProfileRequest(request);
         profileRequest.setUserId(user.getUserId());
 
         profileClient.createProfile(profileRequest);
 
-        return userMapper.toUserResponse(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
