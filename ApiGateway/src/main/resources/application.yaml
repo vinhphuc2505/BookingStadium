@@ -5,7 +5,6 @@ app:
   api-prefix: api/v1
 
 
-
 spring:
   application:
     name: api-gateway
@@ -14,15 +13,24 @@ spring:
     gateway:
       routes:
         - id: identity-service
-          uri: http://localhost:8080
+          uri: ${URL_IDENTITY}
           predicates:
             - Path=/${app.api-prefix}/identity/**
           filters:
             - StripPrefix=2
 
         - id: profile
-          uri: http://localhost:8082
+          uri: ${URL_PROFILE}
           predicates:
             - Path=/${app.api-prefix}/profile/**
           filters:
             - StripPrefix=2
+
+
+jwt:
+  signerKey: ${SIGNER_KEY}
+
+endpoint:
+  public:
+    register: /${app.api-prefix}/identity/user/register
+    login: /${app.api-prefix}/identity/auth/**
