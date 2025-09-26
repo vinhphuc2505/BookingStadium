@@ -19,8 +19,8 @@ public interface UserMapper {
 
     UserResponse toUserResponse(User user);
 
-//    @Mapping(source = "user.userId", target = "userId")
-//    UserResponse toUserResponse(User user, CreateProfileRequest request);
+    @Mapping(source = "user.userId", target = "userId")
+    UserResponse toUserResponse(User user, CreateProfileRequest request);
 
     List<UserResponse> toUserResponseList(List<User> userList);
 

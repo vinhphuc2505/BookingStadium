@@ -2,6 +2,7 @@ package com.BookingStadium.IdentityService.dto.response;
 
 
 import com.BookingStadium.IdentityService.dto.external.profile.ProfileResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
     private RoleResponse role;
 
@@ -22,7 +24,7 @@ public class UserResponse {
 
     private String username;
 
-//    private ProfileResponse profileResponse;
+    private ProfileResponse profileResponse;
 
     private LocalDateTime dateCreated;
 }

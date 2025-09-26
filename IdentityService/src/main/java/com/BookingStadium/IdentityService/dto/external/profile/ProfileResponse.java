@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +19,6 @@ public class ProfileResponse {
 
     private String phone;
 
-    private String date_of_birth;
+    private LocalDate date_of_birth;
 
 }

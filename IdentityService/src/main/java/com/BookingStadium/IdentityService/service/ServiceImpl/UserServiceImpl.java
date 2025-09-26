@@ -57,13 +57,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
 
         user.setRole(role);
+        userRepository.save(user);
 
         var profileRequest = profileMapper.toCreateProfileRequest(request);
         profileRequest.setUserId(user.getUserId());
 
         profileClient.createProfile(profileRequest);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userMapper.toUserResponse(user, profileRequest);
     }
 
     @Override
@@ -113,6 +114,7 @@ public class UserServiceImpl implements UserService {
         userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userRepository.deleteById(id);
+        profileClient.deleteProfile(id);
     }
 
 }
