@@ -23,6 +23,4 @@ public class ProfileResponse {
     private String phone;
 
     private String date_of_birth;
-
-    private LocalDateTime dateCreated;
 }

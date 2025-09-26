@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +19,5 @@ public class UpdateProfileRequest {
 
     private String phone;
 
-    private String date_of_birth;
+    private LocalDate date_of_birth;
 }

@@ -42,11 +42,28 @@ public class ProfileController {
                 .build();
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<ProfileResponse> updateProfile(@PathVariable("id") String id, @RequestBody UpdateProfileRequest request){
+    @GetMapping("/my-profile")
+    public ApiResponse<ProfileResponse> getMyProfile(){
         return ApiResponse.<ProfileResponse>builder()
                 .code(1000)
-                .result(profileService.updateProfile(id, request))
+                .result(profileService.getMyProfile())
+                .build();
+    }
+
+    @PutMapping("/update")
+    public ApiResponse<ProfileResponse> updateProfile(@RequestBody UpdateProfileRequest request){
+        return ApiResponse.<ProfileResponse>builder()
+                .code(1000)
+                .result(profileService.updateProfile(request))
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deleteProfile(@PathVariable("id") String id){
+        profileService.deleteProfile(id);
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .result("Profile has been deleted")
                 .build();
     }
 

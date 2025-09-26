@@ -1,6 +1,7 @@
 package com.BookingStadium.ProfileService.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @Document(collection = "profiles")
@@ -30,7 +31,6 @@ public class Profile {
 
     private String phone;
 
-    private String date_of_birth;
-
-    private LocalDateTime dateCreated = LocalDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate date_of_birth;
 }
