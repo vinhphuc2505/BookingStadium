@@ -24,7 +24,7 @@ public class AuthenticationController {
     public ApiResponse<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) throws JOSEException {
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(1000)
-                .result(authenticationService.authenticate(request))
+                .result(authenticationService.login(request))
                 .build();
     }
 

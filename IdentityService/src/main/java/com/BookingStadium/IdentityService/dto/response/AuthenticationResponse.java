@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticationResponse {
     private boolean authenticate;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 }

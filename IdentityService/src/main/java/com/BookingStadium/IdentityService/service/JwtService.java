@@ -9,5 +9,7 @@ import java.text.ParseException;
 public interface JwtService {
     String generateToken(User user) throws JOSEException;
 
+    boolean verifyToken(String token) throws ParseException, JOSEException;
+
     JwtInfo parseToken(String token) throws ParseException;
 }

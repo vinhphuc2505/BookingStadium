@@ -1,11 +1,16 @@
 package com.BookingStadium.IdentityService.config;
 
 
+import com.BookingStadium.IdentityService.service.ServiceImpl.UserDetailsServiceImpl;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +27,10 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private JwtDecoderConfig jwtDecoderConfig;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -43,7 +52,7 @@ public class SecurityConfig {
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(jwtDecoder())
+                        .decoder(jwtDecoderConfig)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter())
                 ));
         return httpSecurity.build();
@@ -69,6 +78,16 @@ public class SecurityConfig {
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+
+        return new ProviderManager(authenticationProvider);
     }
 
 
