@@ -10,10 +10,7 @@ import com.BookingStadium.IdentityService.dto.response.AuthenticationResponse;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -36,6 +33,16 @@ public class AuthenticationController {
         return ApiResponse.<IntrospectResponse>builder()
                 .code(1000)
                 .result(authenticationService.introspect(request))
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(@RequestHeader("Authorization") String authHeader) throws ParseException {
+        String token = authHeader.replace("Bearer", "");
+        authenticationService.logout(token);
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .result("Logout success")
                 .build();
     }
 

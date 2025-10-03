@@ -1,8 +1,11 @@
 package com.BookingStadium.IdentityService.service.ServiceImpl;
 
 
+import com.BookingStadium.IdentityService.dto.JwtInfo;
 import com.BookingStadium.IdentityService.dto.request.IntrospectRequest;
 import com.BookingStadium.IdentityService.dto.response.IntrospectResponse;
+import com.BookingStadium.IdentityService.entity.RedisToken;
+import com.BookingStadium.IdentityService.repository.RedisTokenRepository;
 import com.BookingStadium.IdentityService.repository.UserRepository;
 import com.BookingStadium.IdentityService.service.AuthenticationService;
 import com.BookingStadium.IdentityService.dto.request.AuthenticationRequest;
@@ -10,6 +13,7 @@ import com.BookingStadium.IdentityService.dto.response.AuthenticationResponse;
 import com.BookingStadium.IdentityService.entity.User;
 import com.BookingStadium.IdentityService.exception.AppException;
 import com.BookingStadium.IdentityService.exception.ErrorCode;
+import com.BookingStadium.IdentityService.service.JwtService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -34,6 +38,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private RedisTokenRepository redisTokenRepository;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -48,13 +56,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
 
         if(authenticate){
-            authenticationResponse.setToken(generateToken(user));
+            authenticationResponse.setToken(jwtService.generateToken(user));
             authenticationResponse.setAuthenticate(true);
         }else{
             authenticationResponse.setAuthenticate(false);
         }
 
         return authenticationResponse;
+    }
+
+    @Override
+    public void logout(String token) throws ParseException {
+        JwtInfo jwtInfo = jwtService.parseToken(token);
+
+        String jwtId = jwtInfo.getJwtId();
+        Date expiredTime = jwtInfo.getExpiredTime();
+
+        if (expiredTime.before(new Date())){
+            throw new RuntimeException("Token đã hết hạn");
+        }
+
+        RedisToken redisToken = RedisToken.builder()
+                .jwtId(jwtId)
+                .expiredTime(expiredTime.getTime() - new Date().getTime())
+                .build();
+
+        redisTokenRepository.save(redisToken);
+
     }
 
     @Override
@@ -74,35 +102,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         introspectResponse.setValid(valid);
 
         return introspectResponse;
-    }
-
-
-    private String generateToken(User user) throws JOSEException {
-
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUserId())
-                .issuer("booking.com")
-                .jwtID(UUID.randomUUID().toString())
-                .issueTime(new Date())
-                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("scope", buildScope(user))
-                .build();
-
-        Payload payload = new Payload(claimsSet.toJSONObject());
-
-        JWSObject jwsObject = new JWSObject(header, payload);
-
-        jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-
-        return jwsObject.serialize();
-    }
-
-
-
-    private String buildScope(User user){
-        return user.getRole().getRoleId().toUpperCase();
     }
 
 
