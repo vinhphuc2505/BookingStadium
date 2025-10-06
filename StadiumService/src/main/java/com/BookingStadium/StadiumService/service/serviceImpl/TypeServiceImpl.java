@@ -28,7 +28,7 @@ public class TypeServiceImpl implements TypeService {
 
     @Override
     public List<TypeResponse> getType() {
-        return typeMapper.toTypeListResponse(typeRepository.findAll());
+        return typeMapper.toTypeResponse(typeRepository.findAll());
     }
 
     @Override

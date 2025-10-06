@@ -30,7 +30,7 @@ public class StadiumLocationServiceImpl implements StadiumLocationService {
 
     @Override
     public List<StadiumLocationResponse> getLocation() {
-        return stadiumLocationMapper.toLocationListResponse(stadiumLocationRepository.findAll());
+        return stadiumLocationMapper.toLocationResponse(stadiumLocationRepository.findAll());
     }
 
     @Override

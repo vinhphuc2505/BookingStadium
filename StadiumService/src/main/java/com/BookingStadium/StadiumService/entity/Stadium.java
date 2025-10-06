@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -22,7 +24,7 @@ public class Stadium {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "stadium_id")
-    private String stadiumId;
+    private UUID stadiumId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
@@ -38,7 +40,7 @@ public class Stadium {
     private String stadiumName;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

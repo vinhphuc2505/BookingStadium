@@ -17,7 +17,7 @@ public interface TypeMapper {
 
     TypeResponse toTypeResponse(TypeOfStadium type);
 
-    List<TypeResponse> toTypeListResponse(List<TypeOfStadium> typeOfStadiumList);
+    List<TypeResponse> toTypeResponse(List<TypeOfStadium> typeOfStadiumList);
 
     @Mapping(target = "typeId", ignore = true)
     void updateType(@MappingTarget TypeOfStadium type, UpdateTypeRequest request);

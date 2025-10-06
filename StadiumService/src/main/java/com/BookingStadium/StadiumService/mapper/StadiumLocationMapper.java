@@ -17,7 +17,7 @@ public interface StadiumLocationMapper {
 
     StadiumLocationResponse toLocationResponse(StadiumLocation stadiumLocation);
 
-    List<StadiumLocationResponse> toLocationListResponse(List<StadiumLocation> locationList);
+    List<StadiumLocationResponse> toLocationResponse(List<StadiumLocation> locationList);
 
     @Mapping(target = "userId", ignore = true)
     void updateLocation(@MappingTarget StadiumLocation stadiumLocation, UpdateLocationRequest request);
