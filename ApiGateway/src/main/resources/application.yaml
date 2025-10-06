@@ -26,6 +26,13 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: stadium
+          uri: ${URL_STADIUM}
+          predicates:
+            - Path=/${app.api-prefix}/stadium/**
+          filters:
+            - StripPrefix=2
+
 
 jwt:
   signerKey: ${SIGNER_KEY}
