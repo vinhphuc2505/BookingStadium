@@ -49,4 +49,7 @@ public class StadiumLocation {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stadium> stadiumList = new ArrayList<>();
 
+    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private WorkSchedule workSchedule;
+
 }
