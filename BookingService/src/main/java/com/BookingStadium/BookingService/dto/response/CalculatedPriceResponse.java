@@ -1,4 +1,4 @@
-package com.BookingStadium.StadiumService.dto.response;
+package com.BookingStadium.BookingService.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -14,9 +14,11 @@ import java.util.UUID;
 @Data
 @Builder
 public class CalculatedPriceResponse {
-    private UUID stadiumId;
+    private UUID bookingDetailsId;
 
-    private BigDecimal price;
+    private UUID bookingId;
+
+    private UUID stadiumId;
 
     private BigDecimal totalHour;
 

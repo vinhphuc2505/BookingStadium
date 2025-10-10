@@ -1,4 +1,4 @@
-package com.BookingStadium.BookingService.dto;
+package com.BookingStadium.BookingService.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SendStadiumId {
+public class PriceRequest {
+    private UUID bookingDetailsId;
+
+    private UUID bookingId;
+
     private UUID stadiumId;
 
     private BigDecimal totalHour;

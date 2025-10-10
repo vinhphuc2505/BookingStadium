@@ -45,6 +45,8 @@ public class BookingDetails {
     @Column(name = "total_hours")
     private BigDecimal totalHours;
 
+//    @Column(name = "status")
+
     @Column(name = "price")
     private BigDecimal price;
 }
