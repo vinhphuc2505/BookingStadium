@@ -38,7 +38,6 @@ public class BookingProducerImpl implements BookingProducer {
             String jsonMessage = objectMapper.writeValueAsString(messageObject);
 
             kafkaTemplate.send(topic, bookingId.toString(), jsonMessage);
-            log.info("📤 Sent PriceRequest to topic [{}]: {}", topic, jsonMessage);
 
         }catch (Exception e){
             log.error("[Kafka] Failed to send price request: {}", e.getMessage(), e);

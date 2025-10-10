@@ -2,6 +2,7 @@ package com.BookingStadium.BookingService.dto.response;
 
 
 
+import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,8 @@ public class BookingDetailsResponse {
     private LocalTime endTime;
 
     private BigDecimal totalHours;
+
+    private BookingDetailsStatus status;
 
     private BigDecimal price;
 }

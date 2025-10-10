@@ -5,6 +5,7 @@ import com.BookingStadium.BookingService.dto.request.details.UpdateBookingDetail
 import com.BookingStadium.BookingService.dto.response.BookingDetailsResponse;
 import com.BookingStadium.BookingService.entity.Booking;
 import com.BookingStadium.BookingService.entity.BookingDetails;
+import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import com.BookingStadium.BookingService.kafka.BookingProducer;
 import com.BookingStadium.BookingService.mapper.BookingDetailsMapper;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
@@ -30,7 +31,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     @Autowired
     private BookingRepository bookingRepository;
     @Autowired
-    private BookingProducer bookingKafkaService;
+    private BookingProducer bookingProducer;
 
     @Override
     public BookingDetailsResponse createBookingDetails(CreateBookingDetailsRequest request) {
@@ -50,7 +51,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
         bookingDetailsRepository.save(bookingDetails);
 
         // Gửi yêu cầu tính giá qua Kafka
-        bookingKafkaService.sendPriceCalculationRequest(bookingDetails.getBookingDetailsId(), request.getBookingId(), bookingDetails.getStadiumId(), totalHour);
+        bookingProducer.sendPriceCalculationRequest
+                (bookingDetails.getBookingDetailsId(), request.getBookingId(), bookingDetails.getStadiumId(), totalHour);
 
         return bookingDetailsMapper.toBookingDetails(bookingDetails);
     }
@@ -65,17 +67,40 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 
     @Override
     public BookingDetailsResponse updateBookingDetails(UUID id, UpdateBookingDetailsRequest request) {
-//        BookingDetails bookingDetails = bookingDetailsRepository
-//                .findById(id).orElseThrow(() -> new RuntimeException("Booking details not existed"));
-//
-//        Booking booking = bookingRepository.findById()
+        BookingDetails bookingDetails = bookingDetailsRepository
+                .findById(id).orElseThrow(() -> new RuntimeException("Booking details not existed"));
 
-        return null;
+        Booking booking = bookingDetails.getBooking();
+
+        // Trừ tổng tiền trong booking
+        BigDecimal totalPriceUpdate = booking.getTotalPrice().subtract(bookingDetails.getPrice());
+
+        booking.setTotalPrice(totalPriceUpdate);
+        bookingRepository.save(booking);
+        // Tính tổng thời gian mới sau khi update
+        BigDecimal newTotalHour = totalHour(request.getStartTime(), request.getEndTime());
+
+        bookingDetails.setTotalHours(newTotalHour);
+        bookingDetails.setStatus(BookingDetailsStatus.RECALCULATING);
+        bookingDetailsMapper.updateBookingDetails(bookingDetails, request);
+
+        // Gọi đến kafka để tính lại giá
+        bookingProducer.sendPriceCalculationRequest
+                (id, booking.getBookingId(), request.getStadiumId(), newTotalHour);
+
+        return bookingDetailsMapper.toBookingDetails(bookingDetailsRepository.save(bookingDetails));
     }
 
     @Override
     public void deleteBookingDetails(UUID id) {
-
+        BookingDetails bookingDetails = bookingDetailsRepository
+                .findById(id).orElseThrow(() -> new RuntimeException("Booking details not existed"));
+        Booking booking = bookingDetails.getBooking();
+        // Trừ tổng tiền trong booking
+        BigDecimal totalPriceUpdate = booking.getTotalPrice().subtract(bookingDetails.getPrice());
+        booking.setTotalPrice(totalPriceUpdate);
+        bookingRepository.save(booking);
+        bookingDetailsRepository.deleteById(id);
     }
 
 

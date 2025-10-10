@@ -1,6 +1,7 @@
 package com.BookingStadium.BookingService.entity;
 
 
+import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,8 @@ public class BookingDetails {
     @Column(name = "total_hours")
     private BigDecimal totalHours;
 
-//    @Column(name = "status")
+    @Column(name = "status")
+    private BookingDetailsStatus status;
 
     @Column(name = "price")
     private BigDecimal price;

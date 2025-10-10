@@ -1,6 +1,7 @@
 package com.BookingStadium.BookingService.dto.request.details;
 
 
+import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +24,7 @@ public class CreateBookingDetailsRequest {
     private LocalTime startTime;
 
     private LocalTime endTime;
+
+    private BookingDetailsStatus status = BookingDetailsStatus.PENDING_CALCULATION;
 
 }

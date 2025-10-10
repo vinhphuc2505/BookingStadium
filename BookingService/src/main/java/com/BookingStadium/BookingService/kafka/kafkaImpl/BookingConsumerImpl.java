@@ -4,6 +4,7 @@ package com.BookingStadium.BookingService.kafka.kafkaImpl;
 import com.BookingStadium.BookingService.dto.response.CalculatedPriceResponse;
 import com.BookingStadium.BookingService.entity.Booking;
 import com.BookingStadium.BookingService.entity.BookingDetails;
+import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import com.BookingStadium.BookingService.kafka.BookingConsumer;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
 import com.BookingStadium.BookingService.repository.BookingRepository;
@@ -29,14 +30,13 @@ public class BookingConsumerImpl implements BookingConsumer {
     @KafkaListener(topics = "booking.response.price", groupId = "booking-service-group")
     public void receivePriceResponse(String message) {
         try {
-            log.warn("📩 Received Kafka message: {}", message);
 
             CalculatedPriceResponse response = objectMapper.readValue(message, CalculatedPriceResponse.class);
-            log.warn("📩 Received Kafka message: {}", response.toString());
 
             BookingDetails bookingDetails =bookingDetailsRepository.findById
                     (response.getBookingDetailsId()).orElseThrow(() -> new RuntimeException("Booking details not existed"));
 
+            bookingDetails.setStatus(BookingDetailsStatus.COMPLETED);
             bookingDetails.setPrice(response.getTotalPrice());
 
             bookingDetailsRepository.save(bookingDetails);
