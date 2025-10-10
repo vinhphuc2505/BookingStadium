@@ -1,0 +1,24 @@
+package com.BookingStadium.StadiumService.dto.response;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class CalculatedPriceResponse {
+    private UUID stadiumId;
+
+    private BigDecimal price;
+
+    private BigDecimal totalHour;
+
+    private BigDecimal totalPrice;
+}

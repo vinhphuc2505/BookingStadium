@@ -1,8 +1,7 @@
 package com.BookingStadium.StadiumService.dto.request.stadium;
 
 
-import com.BookingStadium.StadiumService.entity.StadiumLocation;
-import com.BookingStadium.StadiumService.entity.TypeOfStadium;
+
 import com.BookingStadium.StadiumService.enums.StadiumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
