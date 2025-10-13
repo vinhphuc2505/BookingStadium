@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TypeRepository extends JpaRepository<TypeOfStadium, Integer> {
-
-
-
+    boolean existsByTypeName(String name);
 }

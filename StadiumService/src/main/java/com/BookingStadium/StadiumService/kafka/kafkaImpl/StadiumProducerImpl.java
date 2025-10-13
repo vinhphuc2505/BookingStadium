@@ -1,6 +1,8 @@
 package com.BookingStadium.StadiumService.kafka.kafkaImpl;
 
 import com.BookingStadium.StadiumService.dto.response.CalculatedPriceResponse;
+import com.BookingStadium.StadiumService.exception.AppException;
+import com.BookingStadium.StadiumService.exception.ErrorCode;
 import com.BookingStadium.StadiumService.kafka.StadiumProducer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class StadiumProducerImpl implements StadiumProducer {
             kafkaTemplate.send("booking.response.price", price.getBookingDetailsId().toString(), jsonResponse);
 
         }catch (Exception e){
-            log.error("[Kafka] Failed to send price request: {}", e.getMessage(), e);
+            throw new AppException(ErrorCode.KAFKA_SEND_ERROR);
         }
 
     }

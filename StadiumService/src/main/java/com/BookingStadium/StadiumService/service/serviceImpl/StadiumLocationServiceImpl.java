@@ -4,11 +4,16 @@ import com.BookingStadium.StadiumService.dto.request.location.CreateLocationRequ
 import com.BookingStadium.StadiumService.dto.request.location.UpdateLocationRequest;
 import com.BookingStadium.StadiumService.dto.response.StadiumLocationResponse;
 import com.BookingStadium.StadiumService.entity.StadiumLocation;
+import com.BookingStadium.StadiumService.exception.AppException;
+import com.BookingStadium.StadiumService.exception.ErrorCode;
 import com.BookingStadium.StadiumService.mapper.StadiumLocationMapper;
 import com.BookingStadium.StadiumService.repository.StadiumLocationRepository;
 import com.BookingStadium.StadiumService.service.StadiumLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,8 +27,13 @@ public class StadiumLocationServiceImpl implements StadiumLocationService {
 
 
     @Override
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
     public StadiumLocationResponse createLocation(CreateLocationRequest request) {
+        var id = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+
         StadiumLocation stadiumLocation = stadiumLocationMapper.toLocation(request);
+        stadiumLocation.setUserId(id);
 
         return stadiumLocationMapper.toLocationResponse(stadiumLocationRepository.save(stadiumLocation));
     }
@@ -34,17 +44,28 @@ public class StadiumLocationServiceImpl implements StadiumLocationService {
     }
 
     @Override
-    public StadiumLocationResponse updateLocation(UUID id, UpdateLocationRequest request) {
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
+    public StadiumLocationResponse updateLocation(UUID locationId, UpdateLocationRequest request) {
+        var userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+
         StadiumLocation stadiumLocation = stadiumLocationRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Location not existed"));
+                .findByLocationIdAndUserId(locationId, userId).orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_EXISTED));
+
         stadiumLocationMapper.updateLocation(stadiumLocation, request);
+
         return stadiumLocationMapper.toLocationResponse(stadiumLocationRepository.save(stadiumLocation));
     }
 
     @Override
-    public void deleteLocation(UUID id) {
-        stadiumLocationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location not existed"));
-        stadiumLocationRepository.deleteById(id);
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
+    public void deleteLocation(UUID locationId) {
+        var userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        stadiumLocationRepository.findByLocationIdAndUserId
+                (locationId, userId).orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_EXISTED));
+
+        stadiumLocationRepository.deleteById(locationId);
     }
 }

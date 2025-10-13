@@ -6,12 +6,16 @@ import com.BookingStadium.StadiumService.dto.request.WorkSchelude.UpdateWorkSche
 import com.BookingStadium.StadiumService.dto.response.WorkScheduleResponse;
 import com.BookingStadium.StadiumService.entity.StadiumLocation;
 import com.BookingStadium.StadiumService.entity.WorkSchedule;
+import com.BookingStadium.StadiumService.exception.AppException;
+import com.BookingStadium.StadiumService.exception.ErrorCode;
 import com.BookingStadium.StadiumService.mapper.WorkScheduleMapper;
 import com.BookingStadium.StadiumService.repository.StadiumLocationRepository;
 import com.BookingStadium.StadiumService.repository.WorkScheduleRepository;
 import com.BookingStadium.StadiumService.service.WorkScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -25,9 +29,11 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
     private StadiumLocationRepository stadiumLocationRepository;
 
     @Override
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
     public WorkScheduleResponse createWorkSchedule(CreateWorkScheduleRequest request) {
         StadiumLocation location = stadiumLocationRepository.findById
-                (request.getLocationId()).orElseThrow(() -> new RuntimeException("Location not existed"));
+                (request.getLocationId()).orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_EXISTED));
 
         WorkSchedule workSchedule = workScheduleMapper.toWorkSchedule(request);
         workSchedule.setLocation(location);
@@ -38,26 +44,30 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
     @Override
     public WorkScheduleResponse findWorkScheduleByLocation(UUID id) {
         StadiumLocation location = stadiumLocationRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Location not existed"));
+                .findById(id).orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_EXISTED));
 
         WorkSchedule workSchedule = workScheduleRepository.
-                findByLocation(location).orElseThrow(() -> new RuntimeException("Location not existed"));
+                findByLocation(location).orElseThrow(() -> new AppException(ErrorCode.WORK_SCHEDULE_NOT_EXISTED));
 
         return workScheduleMapper.toWorkScheduleResponse(workSchedule);
     }
 
     @Override
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
     public WorkScheduleResponse updateWorkSchedule(UUID id, UpdateWorkScheduleRequest request) {
         WorkSchedule workSchedule = workScheduleRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Work schedule not existed"));
+                .findById(id).orElseThrow(() -> new AppException(ErrorCode.WORK_SCHEDULE_NOT_EXISTED));
         workScheduleMapper.updateWorkSchedule(workSchedule, request);
         return workScheduleMapper.toWorkScheduleResponse(workScheduleRepository.save(workSchedule));
     }
 
     @Override
+    @PreAuthorize("hasRole('OWNER')")
+    @Transactional
     public void deleteWorkSchedule(UUID id) {
         workScheduleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Work schedule not existed"));
+                .orElseThrow(() -> new AppException(ErrorCode.WORK_SCHEDULE_NOT_EXISTED));
         workScheduleRepository.deleteById(id);
     }
 }

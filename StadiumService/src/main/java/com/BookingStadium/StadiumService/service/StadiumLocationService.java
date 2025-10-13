@@ -12,7 +12,7 @@ public interface StadiumLocationService {
 
     List<StadiumLocationResponse> getLocation();
 
-    StadiumLocationResponse updateLocation(UUID id, UpdateLocationRequest request);
+    StadiumLocationResponse updateLocation(UUID locationId, UpdateLocationRequest request);
 
-    void deleteLocation(UUID id);
+    void deleteLocation(UUID locationId);
 }

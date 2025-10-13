@@ -3,6 +3,8 @@ package com.BookingStadium.StadiumService.kafka.kafkaImpl;
 import com.BookingStadium.StadiumService.dto.request.PriceRequest;
 import com.BookingStadium.StadiumService.dto.response.CalculatedPriceResponse;
 import com.BookingStadium.StadiumService.entity.Stadium;
+import com.BookingStadium.StadiumService.exception.AppException;
+import com.BookingStadium.StadiumService.exception.ErrorCode;
 import com.BookingStadium.StadiumService.kafka.StadiumConsumer;
 import com.BookingStadium.StadiumService.repository.StadiumRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,16 +31,12 @@ public class StadiumConsumerImpl implements StadiumConsumer {
         try {
             PriceRequest request = objectMapper.readValue(message, PriceRequest.class);
 
-            log.warn("📩 Received Kafka message: {}", message);
-
-            log.warn("📩 Object: {}", request.toString());
-
             Stadium stadium = stadiumRepository.findById
-                    (request.getStadiumId()).orElseThrow(() -> new RuntimeException("Stadium not existed"));
+                    (request.getStadiumId()).orElseThrow(() -> new AppException(ErrorCode.STADIUM_NOT_EXISTED));
+
             BigDecimal price = stadium.getPrice();
             BigDecimal totalHour = request.getTotalHour();
             BigDecimal totalPrice = price.multiply(totalHour);
-
 
             var messageResponse = CalculatedPriceResponse.builder()
                     .bookingDetailsId(request.getBookingDetailsId())
@@ -51,7 +49,7 @@ public class StadiumConsumerImpl implements StadiumConsumer {
             stadiumProducer.sendPriceResponse(messageResponse);
 
         }catch (Exception e){
-            log.error("[Kafka] Failed to send price request: {}", e.getMessage(), e);
+            throw new AppException(ErrorCode.KAFKA_RECEIVE_ERROR);
         }
     }
 }
