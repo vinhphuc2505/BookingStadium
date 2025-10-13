@@ -1,4 +1,5 @@
-package com.BookingStadium.StadiumService.exception;
+package com.BookingStadium.BookingService.exception;
+
 
 
 import lombok.Getter;

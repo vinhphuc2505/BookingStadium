@@ -45,3 +45,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  signerKey: ${SIGNER_KEY}

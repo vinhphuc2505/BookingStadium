@@ -6,6 +6,8 @@ import com.BookingStadium.BookingService.dto.response.BookingDetailsResponse;
 import com.BookingStadium.BookingService.entity.Booking;
 import com.BookingStadium.BookingService.entity.BookingDetails;
 import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
+import com.BookingStadium.BookingService.exception.AppException;
+import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.kafka.BookingProducer;
 import com.BookingStadium.BookingService.mapper.BookingDetailsMapper;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
@@ -38,7 +40,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
         BookingDetails bookingDetails = bookingDetailsMapper.toBookingDetails(request);
         // Tìm booking theo bookingId
         Booking booking = bookingRepository.findById(request
-                .getBookingId()).orElseThrow(() -> new RuntimeException("Booking not existed"));
+                .getBookingId()).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
         // Tính tổng số giờ và lưu vào bookingDetails
         BigDecimal totalHour = totalHour(bookingDetails.getStartTime(), bookingDetails.getEndTime());
@@ -60,7 +62,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     @Override
     public List<BookingDetailsResponse> getBookingDetailsByBooking(UUID id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not existed"));
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
         return bookingDetailsMapper.toBookingDetails(bookingDetailsRepository.findAllByBooking(booking));
     }
@@ -68,7 +70,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     @Override
     public BookingDetailsResponse updateBookingDetails(UUID id, UpdateBookingDetailsRequest request) {
         BookingDetails bookingDetails = bookingDetailsRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Booking details not existed"));
+                .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAILS_NOT_FOUND));
 
         Booking booking = bookingDetails.getBooking();
 
@@ -94,7 +96,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     @Override
     public void deleteBookingDetails(UUID id) {
         BookingDetails bookingDetails = bookingDetailsRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Booking details not existed"));
+                .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAILS_NOT_FOUND));
         Booking booking = bookingDetails.getBooking();
         // Trừ tổng tiền trong booking
         BigDecimal totalPriceUpdate = booking.getTotalPrice().subtract(bookingDetails.getPrice());
@@ -107,7 +109,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
 
     private BigDecimal totalHour(LocalTime startTime, LocalTime endTime) {
         if (startTime == null || endTime == null) {
-            throw new IllegalArgumentException("Time is not null");
+            throw new AppException(ErrorCode.TIME_INVALID);
         }
 
         if (endTime.isBefore(startTime)) {

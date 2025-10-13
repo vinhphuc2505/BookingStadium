@@ -5,6 +5,8 @@ import com.BookingStadium.BookingService.dto.response.CalculatedPriceResponse;
 import com.BookingStadium.BookingService.entity.Booking;
 import com.BookingStadium.BookingService.entity.BookingDetails;
 import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
+import com.BookingStadium.BookingService.exception.AppException;
+import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.kafka.BookingConsumer;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
 import com.BookingStadium.BookingService.repository.BookingRepository;
@@ -34,7 +36,7 @@ public class BookingConsumerImpl implements BookingConsumer {
             CalculatedPriceResponse response = objectMapper.readValue(message, CalculatedPriceResponse.class);
 
             BookingDetails bookingDetails =bookingDetailsRepository.findById
-                    (response.getBookingDetailsId()).orElseThrow(() -> new RuntimeException("Booking details not existed"));
+                    (response.getBookingDetailsId()).orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAILS_NOT_FOUND));
 
             bookingDetails.setStatus(BookingDetailsStatus.COMPLETED);
             bookingDetails.setPrice(response.getTotalPrice());
@@ -42,16 +44,15 @@ public class BookingConsumerImpl implements BookingConsumer {
             bookingDetailsRepository.save(bookingDetails);
 
             Booking booking = bookingRepository.findById
-                    (response.getBookingId()).orElseThrow(() -> new RuntimeException("Booking not existed"));
+                    (response.getBookingId()).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
             BigDecimal sumPrice = booking.getTotalPrice().add(response.getTotalPrice());
             booking.setTotalPrice(sumPrice);
 
             bookingRepository.save(booking);
 
-
         }catch (Exception e){
-            throw new RuntimeException();
+            throw new AppException(ErrorCode.KAFKA_RECEIVE_ERROR);
         }
     }
 

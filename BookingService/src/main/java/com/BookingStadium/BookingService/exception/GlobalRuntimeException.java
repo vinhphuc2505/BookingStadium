@@ -1,7 +1,8 @@
-package com.BookingStadium.StadiumService.exception;
+package com.BookingStadium.BookingService.exception;
 
 
-import com.BookingStadium.StadiumService.dto.response.ApiResponse;
+
+import com.BookingStadium.BookingService.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

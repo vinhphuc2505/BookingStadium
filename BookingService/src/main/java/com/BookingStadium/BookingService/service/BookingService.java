@@ -13,6 +13,8 @@ public interface BookingService {
 
     List<BookingResponse> getBookingByUser(UUID id);
 
+    List<BookingResponse> getBookingByLocation(UUID id);
+
     BookingResponse updateBooking(UUID id, UpdateBookingRequest request);
 
     void deleteBooking(UUID id);

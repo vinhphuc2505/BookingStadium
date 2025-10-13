@@ -1,6 +1,8 @@
 package com.BookingStadium.BookingService.kafka.kafkaImpl;
 
 import com.BookingStadium.BookingService.dto.request.PriceRequest;
+import com.BookingStadium.BookingService.exception.AppException;
+import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.kafka.BookingProducer;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
 import com.BookingStadium.BookingService.repository.BookingRepository;
@@ -40,7 +42,7 @@ public class BookingProducerImpl implements BookingProducer {
             kafkaTemplate.send(topic, bookingId.toString(), jsonMessage);
 
         }catch (Exception e){
-            log.error("[Kafka] Failed to send price request: {}", e.getMessage(), e);
+            throw new AppException(ErrorCode.KAFKA_SEND_ERROR);
         }
     }
 }

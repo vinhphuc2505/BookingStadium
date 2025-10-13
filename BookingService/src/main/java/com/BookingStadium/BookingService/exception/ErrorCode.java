@@ -1,4 +1,4 @@
-package com.BookingStadium.StadiumService.exception;
+package com.BookingStadium.BookingService.exception;
 
 
 import lombok.Getter;
@@ -7,14 +7,11 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum ErrorCode {
-    TYPE_NOT_EXISTED(1001, "Type not existed", HttpStatus.NOT_FOUND),
-    TYPE_EXISTED(1002, "Type existed", HttpStatus.BAD_REQUEST),
-    LOCATION_NOT_EXISTED(1004, "Location not existed", HttpStatus.NOT_FOUND),
-    STADIUM_NOT_EXISTED(1003, "Stadium not existed", HttpStatus.NOT_FOUND),
-    WORK_SCHEDULE_NOT_EXISTED(1005, "Work schedule not existed", HttpStatus.NOT_FOUND),
-    KAFKA_SEND_ERROR(1006, "Failed to send", HttpStatus.INTERNAL_SERVER_ERROR),
-    KAFKA_RECEIVE_ERROR(1007, "Failed to receive", HttpStatus.INTERNAL_SERVER_ERROR),
-    USER_NOT_EXISTED(1008, "User not existed", HttpStatus.NOT_FOUND),
+    BOOKING_NOT_FOUND(1001, "Booking not found", HttpStatus.NOT_FOUND),
+    BOOKING_DETAILS_NOT_FOUND(1002, "Booking details not found", HttpStatus.NOT_FOUND),
+    TIME_INVALID(1003, "Time invalid", HttpStatus.BAD_REQUEST),
+    KAFKA_SEND_ERROR(1004, "Kafka send message error", HttpStatus.INTERNAL_SERVER_ERROR),
+    KAFKA_RECEIVE_ERROR(1005, "Kafka receive message error", HttpStatus.INTERNAL_SERVER_ERROR),
     KEY_INVALID(1010, "Key invalid", HttpStatus.NOT_FOUND),
     IS_NOT_PERMISSION(1011, "You do not have access", HttpStatus.UNAUTHORIZED),
 

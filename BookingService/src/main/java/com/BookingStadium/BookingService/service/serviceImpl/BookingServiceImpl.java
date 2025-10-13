@@ -4,11 +4,15 @@ import com.BookingStadium.BookingService.dto.request.booking.CreateBookingReques
 import com.BookingStadium.BookingService.dto.request.booking.UpdateBookingRequest;
 import com.BookingStadium.BookingService.dto.response.BookingResponse;
 import com.BookingStadium.BookingService.entity.Booking;
+import com.BookingStadium.BookingService.exception.AppException;
+import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.mapper.BookingMapper;
 import com.BookingStadium.BookingService.repository.BookingRepository;
 import com.BookingStadium.BookingService.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +28,8 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public BookingResponse createBooking(CreateBookingRequest request) {
         Booking booking = bookingMapper.toBooking(request);
 
@@ -31,22 +37,33 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     public List<BookingResponse> getBookingByUser(UUID id) {
         return bookingMapper.toBookingResponse(bookingRepository.findAllByUserId(id));
     }
 
+    @Override
+    @PreAuthorize("hasRole('OWNER') or hasRole('ADMIN')")
+    public List<BookingResponse> getBookingByLocation(UUID id) {
+        return bookingMapper.toBookingResponse(bookingRepository.findAllByLocationId(id));
+    }
+
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public BookingResponse updateBooking(UUID id, UpdateBookingRequest request) {
         Booking booking = bookingRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Booking not existed"));
+                .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
         bookingMapper.updateBooking(booking, request);
         return bookingMapper.toBookingResponse(bookingRepository.save(booking));
     }
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public void deleteBooking(UUID id) {
-        bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not existed"));
+        bookingRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
         bookingRepository.deleteById(id);
     }
 }
