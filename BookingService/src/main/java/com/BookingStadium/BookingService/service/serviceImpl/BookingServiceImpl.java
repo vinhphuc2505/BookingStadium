@@ -11,6 +11,7 @@ import com.BookingStadium.BookingService.repository.BookingRepository;
 import com.BookingStadium.BookingService.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +53,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @PreAuthorize("hasRole('CUSTOMER')")
     @Transactional
-    public BookingResponse updateBooking(UUID id, UpdateBookingRequest request) {
+    public BookingResponse updateBooking(UUID bookingId, UpdateBookingRequest request) {
+        var userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+
         Booking booking = bookingRepository
-                .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+                .findByBookingIdAndUserId(bookingId, userId).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
         bookingMapper.updateBooking(booking, request);
         return bookingMapper.toBookingResponse(bookingRepository.save(booking));
     }
@@ -62,8 +66,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @PreAuthorize("hasRole('CUSTOMER')")
     @Transactional
-    public void deleteBooking(UUID id) {
-        bookingRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
-        bookingRepository.deleteById(id);
+    public void deleteBooking(UUID bookingId) {
+        var userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        bookingRepository.findByBookingIdAndUserId(bookingId, userId).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
+        bookingRepository.deleteById(bookingId);
     }
 }

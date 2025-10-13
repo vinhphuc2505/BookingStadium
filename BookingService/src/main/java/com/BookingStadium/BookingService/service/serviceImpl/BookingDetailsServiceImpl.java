@@ -14,7 +14,9 @@ import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
 import com.BookingStadium.BookingService.repository.BookingRepository;
 import com.BookingStadium.BookingService.service.BookingDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,6 +38,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     private BookingProducer bookingProducer;
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public BookingDetailsResponse createBookingDetails(CreateBookingDetailsRequest request) {
         BookingDetails bookingDetails = bookingDetailsMapper.toBookingDetails(request);
         // Tìm booking theo bookingId
@@ -68,6 +72,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     }
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public BookingDetailsResponse updateBookingDetails(UUID id, UpdateBookingDetailsRequest request) {
         BookingDetails bookingDetails = bookingDetailsRepository
                 .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAILS_NOT_FOUND));
@@ -94,6 +100,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
     }
 
     @Override
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Transactional
     public void deleteBookingDetails(UUID id) {
         BookingDetails bookingDetails = bookingDetailsRepository
                 .findById(id).orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAILS_NOT_FOUND));
@@ -101,6 +109,7 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
         // Trừ tổng tiền trong booking
         BigDecimal totalPriceUpdate = booking.getTotalPrice().subtract(bookingDetails.getPrice());
         booking.setTotalPrice(totalPriceUpdate);
+
         bookingRepository.save(booking);
         bookingDetailsRepository.deleteById(id);
     }
