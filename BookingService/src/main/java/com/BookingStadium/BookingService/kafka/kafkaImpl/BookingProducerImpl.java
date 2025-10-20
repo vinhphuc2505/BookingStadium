@@ -1,6 +1,8 @@
 package com.BookingStadium.BookingService.kafka.kafkaImpl;
 
+import com.BookingStadium.BookingService.dto.request.CreateBillRequest;
 import com.BookingStadium.BookingService.dto.request.PriceRequest;
+import com.BookingStadium.BookingService.dto.request.SendTotalPriceRequest;
 import com.BookingStadium.BookingService.exception.AppException;
 import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.kafka.BookingProducer;
@@ -36,6 +38,36 @@ public class BookingProducerImpl implements BookingProducer {
         String topic = "booking.request.price";
         try {
             var messageObject = new PriceRequest(bookingDetailsId, bookingId, stadiumId, totalHour);
+
+            String jsonMessage = objectMapper.writeValueAsString(messageObject);
+
+            kafkaTemplate.send(topic, bookingId.toString(), jsonMessage);
+
+        }catch (Exception e){
+            throw new AppException(ErrorCode.KAFKA_SEND_ERROR);
+        }
+    }
+
+    @Override
+    public void sendCreateBillRequest(UUID bookingId, UUID userId) {
+        String topic = "create.bill.request";
+        try {
+            var messageObject = new CreateBillRequest(bookingId, userId);
+
+            String jsonMessage = objectMapper.writeValueAsString(messageObject);
+
+            kafkaTemplate.send(topic, bookingId.toString(), jsonMessage);
+
+        }catch (Exception e){
+            throw new AppException(ErrorCode.KAFKA_SEND_ERROR);
+        }
+    }
+
+    @Override
+    public void sendTotalPrice(UUID bookingId, BigDecimal finalPrice){
+        String topic = "send.total.price";
+        try {
+            var messageObject = new SendTotalPriceRequest(bookingId, finalPrice);
 
             String jsonMessage = objectMapper.writeValueAsString(messageObject);
 

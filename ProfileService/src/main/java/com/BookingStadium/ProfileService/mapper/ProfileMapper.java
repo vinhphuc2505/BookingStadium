@@ -16,7 +16,7 @@ public interface ProfileMapper {
 
     ProfileResponse toProfileResponse(Profile profile);
 
-    List<ProfileResponse> toProfileListResponse(List<Profile> profiles);
+    List<ProfileResponse> toProfileResponse(List<Profile> profiles);
 
     void updateProfile(@MappingTarget Profile profile, UpdateProfileRequest request);
 }

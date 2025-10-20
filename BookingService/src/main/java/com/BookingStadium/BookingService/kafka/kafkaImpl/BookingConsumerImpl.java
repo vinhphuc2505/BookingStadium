@@ -8,6 +8,7 @@ import com.BookingStadium.BookingService.enums.BookingDetailsStatus;
 import com.BookingStadium.BookingService.exception.AppException;
 import com.BookingStadium.BookingService.exception.ErrorCode;
 import com.BookingStadium.BookingService.kafka.BookingConsumer;
+import com.BookingStadium.BookingService.kafka.BookingProducer;
 import com.BookingStadium.BookingService.repository.BookingDetailsRepository;
 import com.BookingStadium.BookingService.repository.BookingRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,8 @@ public class BookingConsumerImpl implements BookingConsumer {
     private final BookingDetailsRepository bookingDetailsRepository;
 
     private final ObjectMapper objectMapper;
+
+    private final BookingProducer bookingProducer;
 
     @Override
     @KafkaListener(topics = "booking.response.price", groupId = "booking-service-group")
@@ -48,6 +51,9 @@ public class BookingConsumerImpl implements BookingConsumer {
 
             BigDecimal sumPrice = booking.getTotalPrice().add(response.getTotalPrice());
             booking.setTotalPrice(sumPrice);
+
+            // Thêm kafka update Bill
+            bookingProducer.sendTotalPrice(booking.getBookingId(), booking.getTotalPrice());
 
             bookingRepository.save(booking);
 

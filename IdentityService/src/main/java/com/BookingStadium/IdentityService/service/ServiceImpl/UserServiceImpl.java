@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUser() {
-        return userMapper.toUserResponseList(userRepository.findAll());
+        return userMapper.toUserResponse(userRepository.findAll());
     }
 
     @Override

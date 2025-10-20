@@ -41,7 +41,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<ProfileResponse> getProfile() {
-        return profileMapper.toProfileListResponse(profileRepository.findAll());
+        return profileMapper.toProfileResponse(profileRepository.findAll());
     }
 
     @Override

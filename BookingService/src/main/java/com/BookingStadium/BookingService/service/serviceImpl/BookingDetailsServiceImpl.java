@@ -110,6 +110,8 @@ public class BookingDetailsServiceImpl implements BookingDetailsService {
         BigDecimal totalPriceUpdate = booking.getTotalPrice().subtract(bookingDetails.getPrice());
         booking.setTotalPrice(totalPriceUpdate);
 
+        bookingProducer.sendTotalPrice(booking.getBookingId(), booking.getTotalPrice());
+
         bookingRepository.save(booking);
         bookingDetailsRepository.deleteById(id);
     }

@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface BookingProducer {
     void sendPriceCalculationRequest(UUID bookingDetailsId, UUID bookingId, UUID stadiumId, BigDecimal totalHour);
 
+    void sendCreateBillRequest(UUID bookingId, UUID userId);
+
+    void sendTotalPrice(UUID bookingId, BigDecimal finalPrice);
 }

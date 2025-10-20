@@ -22,7 +22,7 @@ public interface UserMapper {
     @Mapping(source = "user.userId", target = "userId")
     UserResponse toUserResponse(User user, CreateProfileRequest request);
 
-    List<UserResponse> toUserResponseList(List<User> userList);
+    List<UserResponse> toUserResponse(List<User> userList);
 
     @Mapping(target = "role", ignore = true) //Chỉ định field role sẽ bị bỏ qua trong quá trình mapping, không bị ghi đè
     void updateUser(@MappingTarget User user, UpdateUserRequest request);

@@ -6,6 +6,7 @@ import com.BookingStadium.BookingService.dto.response.BookingResponse;
 import com.BookingStadium.BookingService.entity.Booking;
 import com.BookingStadium.BookingService.exception.AppException;
 import com.BookingStadium.BookingService.exception.ErrorCode;
+import com.BookingStadium.BookingService.kafka.BookingProducer;
 import com.BookingStadium.BookingService.mapper.BookingMapper;
 import com.BookingStadium.BookingService.repository.BookingRepository;
 import com.BookingStadium.BookingService.service.BookingService;
@@ -25,6 +26,8 @@ public class BookingServiceImpl implements BookingService {
     private BookingRepository bookingRepository;
     @Autowired
     private BookingMapper bookingMapper;
+    @Autowired
+    private BookingProducer bookingProducer;
 
 
 
@@ -34,7 +37,11 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse createBooking(CreateBookingRequest request) {
         Booking booking = bookingMapper.toBooking(request);
 
-        return bookingMapper.toBookingResponse(bookingRepository.save(booking));
+        bookingRepository.save(booking);
+
+        bookingProducer.sendCreateBillRequest(booking.getBookingId(), booking.getUserId());
+
+        return bookingMapper.toBookingResponse(booking);
     }
 
     @Override
