@@ -1,8 +1,4 @@
 # File Tree: BookingStadium
-
-**Generated:** 10/20/2025, 6:09:53 PM
-**Root Path:** `d:\Workspace\SpringBoot\BookingStadium`
-
 ```
 ├── ApiGateway
 │   ├── .mvn
