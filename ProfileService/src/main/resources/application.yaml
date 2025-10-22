@@ -10,8 +10,8 @@ spring:
     name: profile-service
   data:
     mongodb:
-      uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/
-      database: ${DB_NAME}
+      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/
+      database: ${PROFILE_DB_NAME}
 
 jwt:
   signerKey: ${SIGNER_KEY}

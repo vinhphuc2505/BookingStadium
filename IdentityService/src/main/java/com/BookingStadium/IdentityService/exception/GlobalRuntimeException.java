@@ -63,26 +63,26 @@ public class GlobalRuntimeException {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
     }
 
-    // Xử lý lỗi khi không kết nối được đến service khác
-    @ExceptionHandler(value = ConnectException.class)
-    ResponseEntity<ApiResponse> handlerConnectException(ConnectException exception){
-        ApiResponse apiResponse = new ApiResponse();
-
-        apiResponse.setCode(ErrorCode.NO_CONNECTION.getErrorCode());
-        apiResponse.setMessage(ErrorCode.NO_CONNECTION.getMessage());
-
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiResponse);
-    }
-    // Xử lý lỗi từ Feign Client
-    @ExceptionHandler(value = FeignException.class)
-    ResponseEntity<ApiResponse> handlerFeignException(FeignException exception){
-        ApiResponse apiResponse = new ApiResponse();
-
-        apiResponse.setCode(ErrorCode.NO_CONNECTION.getErrorCode());
-        apiResponse.setMessage(ErrorCode.NO_CONNECTION.getMessage());
-
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiResponse);
-    }
+//    // Xử lý lỗi khi không kết nối được đến service khác
+//    @ExceptionHandler(value = ConnectException.class)
+//    ResponseEntity<ApiResponse> handlerConnectException(ConnectException exception){
+//        ApiResponse apiResponse = new ApiResponse();
+//
+//        apiResponse.setCode(ErrorCode.NO_CONNECTION.getErrorCode());
+//        apiResponse.setMessage(ErrorCode.NO_CONNECTION.getMessage());
+//
+//        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiResponse);
+//    }
+//    // Xử lý lỗi từ Feign Client
+//    @ExceptionHandler(value = FeignException.class)
+//    ResponseEntity<ApiResponse> handlerFeignException(FeignException exception){
+//        ApiResponse apiResponse = new ApiResponse();
+//
+//        apiResponse.setCode(ErrorCode.NO_CONNECTION.getErrorCode());
+//        apiResponse.setMessage(ErrorCode.NO_CONNECTION.getMessage());
+//
+//        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiResponse);
+//    }
 
 
 //    @ExceptionHandler(value = RuntimeException.class)

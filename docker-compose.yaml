@@ -32,5 +32,57 @@ services:
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
 
+  # 2. MYSQL SERVICE
+  mysql:
+    image: mysql:8.0.43-debian
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # 3. MONGODB SERVICE
+  mongodb:
+    image: mongodb/mongodb-community-server:7.0-ubi8
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    volumes:
+      - mongo_data:/data/db
+
+  # 4. POSTGRESQL SERVICE
+  postgres:
+    image: postgres:12.22
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 5. REDIS SERVICE
+  redis:
+    image: redis/redis-stack:7.4.0-v6
+    container_name: redis
+    ports:
+      # Server
+      - "6379:6379"
+      # Web UI
+      - "8001:8001"
+    environment:
+      - REDIS_ARGS="--requirepass 123456"
+    volumes:
+      - redis_data:/data
+
 volumes:
   kafka_data:
+  mysql_data:
+  mongo_data:
+  postgres_data:
+  redis_data:

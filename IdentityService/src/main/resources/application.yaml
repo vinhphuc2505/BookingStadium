@@ -9,14 +9,15 @@ spring:
     name: identity-service
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:IdentityService}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${IDENTITY_DB_NAME:IdentityService}
     driverClassName: "com.mysql.cj.jdbc.Driver"
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:123456}
-    jpa:
-      hibernate:
-        ddl-auto: update
-      show-sql: true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
   data:
     redis:
