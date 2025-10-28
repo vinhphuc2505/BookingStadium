@@ -9,9 +9,9 @@ spring:
     name: stadium-service
 
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_POST}/${POSTGRES_DB}
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_POST:5432}/${STADIUM_DB_NAME:stadium_db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -23,7 +23,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
-    bootstrap-servers: localhost:9094
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_POST:9094}
     producer:
 #      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -43,4 +43,4 @@ spring:
       org.springframework.kafka: DEBUG
 
 jwt:
-  signerKey: ${SIGNER_KEY}
+  signerKey: ${SIGNER_KEY:t3/lBrCm1lZ4HeOZtzdcgR678t3aEeFB5NVrsPSRzq4DPCRpS/D3NvbQcpMwXgKb}

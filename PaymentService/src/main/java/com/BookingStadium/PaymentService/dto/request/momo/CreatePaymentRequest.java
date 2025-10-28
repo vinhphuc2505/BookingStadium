@@ -1,4 +1,4 @@
-package com.BookingStadium.PaymentService.dto.request.Payment;
+package com.BookingStadium.PaymentService.dto.request.momo;
 
 
 import lombok.AllArgsConstructor;
@@ -6,10 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreatePaymentRequest {
-    private String paymentMethodName;
+    private UUID billId;
+
+    private String orderInfo;
 }

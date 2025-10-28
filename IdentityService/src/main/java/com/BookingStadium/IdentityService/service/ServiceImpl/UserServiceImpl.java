@@ -1,6 +1,7 @@
 package com.BookingStadium.IdentityService.service.ServiceImpl;
 
 import com.BookingStadium.IdentityService.client.ProfileClient;
+import com.BookingStadium.IdentityService.dto.request.UpdateRoleRequest;
 import com.BookingStadium.IdentityService.mapper.external.ProfileMapper;
 import com.BookingStadium.IdentityService.repository.RoleRepository;
 import com.BookingStadium.IdentityService.repository.UserRepository;
@@ -13,6 +14,7 @@ import com.BookingStadium.IdentityService.entity.User;
 import com.BookingStadium.IdentityService.exception.AppException;
 import com.BookingStadium.IdentityService.exception.ErrorCode;
 import com.BookingStadium.IdentityService.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -104,6 +108,20 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse updateUserRole(String userId, UpdateRoleRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info(request.getRoleId());
+        Role role = roleRepository.findById(request.getRoleId().toUpperCase())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        user.setRole(role);
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
     }
 
 

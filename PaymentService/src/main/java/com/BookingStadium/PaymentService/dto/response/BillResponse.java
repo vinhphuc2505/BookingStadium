@@ -19,6 +19,8 @@ import java.util.UUID;
 public class BillResponse {
     private UUID billId;
 
+    private PaymentMethodResponse paymentMethod;
+
     private UUID bookingId;
 
     private UUID userId;

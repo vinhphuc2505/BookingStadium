@@ -1,4 +1,4 @@
-package com.BookingStadium.PaymentService.dto.request.Payment;
+package com.BookingStadium.PaymentService.dto.request.payment;
 
 
 import lombok.AllArgsConstructor;

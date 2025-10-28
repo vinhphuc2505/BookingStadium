@@ -35,7 +35,10 @@ public class BookingServiceImpl implements BookingService {
     @PreAuthorize("hasRole('CUSTOMER')")
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request) {
+        var userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+
         Booking booking = bookingMapper.toBooking(request);
+        booking.setUserId(userId);
 
         bookingRepository.save(booking);
 

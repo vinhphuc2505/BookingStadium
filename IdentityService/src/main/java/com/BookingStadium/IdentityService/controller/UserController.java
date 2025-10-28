@@ -1,6 +1,7 @@
 package com.BookingStadium.IdentityService.controller;
 
 
+import com.BookingStadium.IdentityService.dto.request.UpdateRoleRequest;
 import com.BookingStadium.IdentityService.service.UserService;
 import com.BookingStadium.IdentityService.dto.request.CreateUserRequest;
 import com.BookingStadium.IdentityService.dto.request.UpdateUserRequest;
@@ -55,6 +56,14 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .code(1000)
                 .result(userService.updateUser(request))
+                .build();
+    }
+
+    @PutMapping("/update/role/{id}")
+    public ApiResponse<UserResponse> updateUserRole(@PathVariable("id") String userId, @RequestBody UpdateRoleRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .code(1000)
+                .result(userService.updateUserRole(userId, request))
                 .build();
     }
 

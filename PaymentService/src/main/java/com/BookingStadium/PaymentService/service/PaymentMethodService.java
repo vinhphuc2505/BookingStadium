@@ -1,8 +1,8 @@
 package com.BookingStadium.PaymentService.service;
 
 
-import com.BookingStadium.PaymentService.dto.request.Payment.CreatePaymentRequest;
-import com.BookingStadium.PaymentService.dto.request.Payment.UpdatePaymentRequest;
+import com.BookingStadium.PaymentService.dto.request.payment.CreatePaymentRequest;
+import com.BookingStadium.PaymentService.dto.request.payment.UpdatePaymentRequest;
 import com.BookingStadium.PaymentService.dto.response.PaymentMethodResponse;
 
 import java.util.List;

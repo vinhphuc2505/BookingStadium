@@ -17,6 +17,8 @@ import java.util.UUID;
 public class StadiumLocationResponse {
     private UUID userId;
 
+    private UUID locationId;
+
     private String locationName;
 
     private String address;

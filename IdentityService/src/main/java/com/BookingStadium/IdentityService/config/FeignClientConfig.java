@@ -17,7 +17,7 @@ public class FeignClientConfig {
 
             if (authentication != null && authentication instanceof JwtAuthenticationToken jwtAuth) {
 
-                // Lấy giá trị token đúng cách
+                // Lấy giá trị token
                 String token = jwtAuth.getToken().getTokenValue();
 
                 // Gắn Authorization header vào request Feign

@@ -16,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CreateBookingRequest {
-    private UUID userId;
 
     private UUID locationId;
 

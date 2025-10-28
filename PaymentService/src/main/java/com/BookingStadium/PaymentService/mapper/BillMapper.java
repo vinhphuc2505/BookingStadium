@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = PaymentMethodMapper.class)
 public interface BillMapper {
     Bill toBill(CreateBillRequest request);
 
